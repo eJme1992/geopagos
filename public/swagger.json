@@ -1,0 +1,255 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "My Api documentation Att Edwin Mogollon",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/registerAnswer": {
+            "post": {
+                "tags": [
+                    "Respuestas"
+                ],
+                "summary": "Registro final de las respuestas",
+                "description": "Registra las respuestas de un cliente",
+                "operationId": "registerAnswer",
+                "parameters": [
+                    {
+                        "name": "Authorization_",
+                        "in": "header",
+                        "description": "Bearer token for authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "JSON data to import",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "json": {
+                                        "type": "string",
+                                        "example": "{\"name\":\"page1\",\"title\":\"Email\",\"time\":{\"minutes\":\"00\",\"seconds\":\"04\",\"milliseconds\":\"580\"},\"value\":\"ss@mail.com\"},{\"name\":\"page2\",\"title\":\"Genero\",\"time\":{\"minutes\":\"00\",\"seconds\":\"03\",\"milliseconds\":\"050\"},\"value\":\"Item2\"},{\"name\":\"page3\",\"title\":\"Edad\",\"time\":{\"minutes\":\"00\",\"seconds\":\"06\",\"milliseconds\":\"630\"},\"value\":\"2024-06-09T22:05\"},{\"name\":\"page4\",\"title\":\"Preferencia\",\"time\":{\"minutes\":\"00\",\"seconds\":\"02\",\"milliseconds\":\"220\"},\"value\":\"Image1\"}"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Respuesta almacenada correctamente"
+                    },
+                    "400": {
+                        "description": "Invalid JSON data supplied"
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Log in a user",
+                "description": "Loguea un usuario admin.",
+                "operationId": "loginUser",
+                "requestBody": {
+                    "description": "User log in",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "email": "user@pruebaNube.com",
+                                    "password": "password"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid email/password supplied"
+                    }
+                }
+            }
+        },
+        "/register": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Register a new user",
+                "description": "Registra un usuario Admin.",
+                "operationId": "registerUser",
+                "requestBody": {
+                    "description": "User registration",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "email": "user@prueba.com",
+                                    "password": "password"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "message": "User registered successfully"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/begin": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Log in or register a user",
+                "description": "Logs in or registers a user based on the provided email, and returns a token for the rest of the survey.",
+                "operationId": "1c26f87f0f076fe86bba678403154289",
+                "requestBody": {
+                    "description": "Client login",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "survey": {
+                                        "description": "Nombre de la encuesta",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "email": "user@prueba.com",
+                                    "survey": "EncuentadepruebaparaNeurociencia"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Respuesta registrada exitosamente"
+                    },
+                    "400": {
+                        "description": "Error al registrar la respuesta"
+                    }
+                }
+            }
+        },
+        "/importFromJson": {
+            "post": {
+                "tags": [
+                    "Administrador de encuestas"
+                ],
+                "summary": "Import data from JSON - IMPORTA ENCUESTA DESDE JSON",
+                "description": "Para importar el contenido de una encuesta desde un JSON convertido a string, para ello debe antes eliminar las referencia a imágenes, además debe está logueado como administrador",
+                "operationId": "importFromJson",
+                "parameters": [
+                    {
+                        "name": "Authorization_",
+                        "in": "header",
+                        "description": "Bearer token for authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "JSON data to import",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "json": {
+                                        "type": "string",
+                                        "example": "{\"title\":\"Encuesta de prueba\",\"description\":\"Encuesta de prueba\",\"pages\":[{\"name\":\"page1\",\"elements\":[{\"type\":\"dropdown\",\"name\":\"question1\",\"title\":\"¿Cuál es tu color favorito?\",\"choices\":[{\"value\":\"Rojo\",\"text\":\"Rojo\"},{\"value\":\"Azul\",\"text\":\"Azul\"},{\"value\":\"Verde\",\"text\":\"Verde\"}]},{\"type\":\"text\",\"name\":\"question2\",\"title\":\"¿Cuál es tu correo electrónico?\",\"inputType\":\"email\"},{\"type\":\"imagepicker\",\"name\":\"question3\",\"title\":\"¿Cuál es tu animal favorito?\",\"choices\":[{\"value\":\"Perro\",\"text\":\"Perro\"},{\"value\":\"Gato\",\"text\":\"Gato\"},{\"value\":\"Pájaro\",\"text\":\"Pájaro\"}]}]}]}"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Data imported successfully"
+                    },
+                    "400": {
+                        "description": "Invalid JSON data supplied"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -31,59 +31,58 @@ class PlayerController extends Controller
         $this->genderRepository = $genderRepository;
     }
 
-    /**
-     * @OA\Post(
-     *     path="/api/players/register",
-     *     tags={"Players"},
-     *     summary="Register a new player",
-     *     description="Registers a new player with the specified details. Requires JWT token for authentication.",
-     *     security={{"bearerAuth": {}}},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(property="gender", type="string", enum={"male", "female"}, example="male", description="Gender of the player"),
-     *             @OA\Property(property="name", type="string", example="John Doe", description="Name of the player"),
-     *             @OA\Property(property="ability", type="integer", format="int32", example=75, description="Ability of the player (1-100)", minimum=1, maximum=100),
-     *             @OA\Property(property="atributesPlayer", type="object", description="Attributes of the player as key-value pairs",
-     *                 @OA\AdditionalProperties(
-     *                     type="number",
-     *                     description="Value associated with the attribute key"
-     *                 )
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Player registered successfully",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="success"),
-     *             @OA\Property(property="data", type="object", description="Registered player data",
-     *                 @OA\Property(property="id", type="integer", example=1, description="Player ID"),
-     *                 @OA\Property(property="name", type="string", example="John Doe"),
-     *                 @OA\Property(property="gender", type="string", example="male"),
-     *                 @OA\Property(property="ability", type="integer", format="int32", example=75),
-     *                 @OA\Property(property="atributesPlayer", type="object", description="Attributes of the player as key-value pairs",
-     *                     @OA\AdditionalProperties(type="number")
-     *                 )
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Validation error",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="error"),
-     *             @OA\Property(property="message", type="object", description="Validation error messages",
-     *                 @OA\Property(property="gender", type="array", @OA\Items(type="string"), example={"The gender field is required."}),
-     *                 @OA\Property(property="name", type="array", @OA\Items(type="string"), example={"The name field is required."}),
-     *                 @OA\Property(property="ability", type="array", @OA\Items(type="string"), example={"The ability must be an integer between 1 and 100."}),
-     *                 @OA\Property(property="atributesPlayer", type="array", @OA\Items(type="string"), example={"The atributes player field is required."})
-     *             )
-     *         )
-     *     )
-     * )
-     */
-
+  
+   /**
+ * @OA\Post(
+ *     path="/api/players/register",
+ *     tags={"Players"},
+ *     summary="Register a new player",
+ *     description="Registers a new player with the specified details. Requires JWT token for authentication.",
+ *     security={{"bearerAuth": {}}},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             @OA\Property(property="gender", type="string", enum={"male", "female"}, example="male", description="Gender of the player"),
+ *             @OA\Property(property="name", type="string", example="John Doe", description="Name of the player"),
+ *             @OA\Property(property="ability", type="integer", format="int32", example=75, description="Ability of the player (1-100)", minimum=1, maximum=100),
+ *             @OA\Property(property="atributesPlayer", type="object", description="Attributes of the player as key-value pairs",
+ *                 @OA\Property(property="strength", type="number", example=5, description="Strength attribute of the player"),
+ *                 @OA\Property(property="speed", type="number", example=5, description="Speed attribute of the player")
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Player registered successfully",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="success"),
+ *             @OA\Property(property="data", type="object", description="Registered player data",
+ *                 @OA\Property(property="id", type="integer", example=1, description="Player ID"),
+ *                 @OA\Property(property="name", type="string", example="John Doe"),
+ *                 @OA\Property(property="gender", type="string", example="male"),
+ *                 @OA\Property(property="ability", type="integer", format="int32", example=75),
+ *                 @OA\Property(property="atributesPlayer", type="object", description="Attributes of the player as key-value pairs",
+ *                     @OA\Property(property="strength", type="number", example=5),
+ *                     @OA\Property(property="speed", type="number", example=5)
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Validation error",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", example="error"),
+ *             @OA\Property(property="message", type="object", description="Validation error messages",
+ *                 @OA\Property(property="gender", type="array", @OA\Items(type="string"), example={"The gender field is required."}),
+ *                 @OA\Property(property="name", type="array", @OA\Items(type="string"), example={"The name field is required."}),
+ *                 @OA\Property(property="ability", type="array", @OA\Items(type="string"), example={"The ability must be an integer between 1 and 100."}),
+ *                 @OA\Property(property="atributesPlayer", type="array", @OA\Items(type="string"), example={"The atributes player field is required."})
+ *             )
+ *         )
+ *     )
+ * )
+ */
     public function register(Request $request): JsonResponse
     {
         try {
@@ -134,6 +133,8 @@ class PlayerController extends Controller
                 "data" => $player,
             ]);
         } catch (\Exception $e) {
+            // registrar el error en un log
+            info($e->getMessage(), $e->getLine());
             return response()->json(
                 [
                     "status" => GeneralStatusResponse::ERROR,
@@ -144,12 +145,13 @@ class PlayerController extends Controller
         }
     }
 
+   
     /**
      * @OA\Get(
      *     path="/api/players/gender/{gender}",
      *     summary="Obtiene una lista de jugadores según el género",
      *     tags={"Players"},
-     *     description="Registers a new player with the specified details. Requires JWT token for authentication.",
+     *     description="Obtiene una lista de jugadores según el género especificado. Requiere un token JWT para la autenticación.",
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="gender",
@@ -255,6 +257,7 @@ class PlayerController extends Controller
                 "data" => $players,
             ]);
         } catch (\Exception $e) {
+            info($e->getMessage(), $e->getLine());
             return response()->json(
                 [
                     "status" => GeneralStatusResponse::ERROR,
@@ -266,13 +269,13 @@ class PlayerController extends Controller
         }
     }
 
+    
     /**
      * @OA\Get(
      *     path="/api/players/gender/nottournament/{gender}/{tournamentId}",
      *     tags={"Players"},
      *     summary="Obtiene jugadores por género que no están en el torneo",
-     *     description="Este endpoint devuelve una lista de jugadores de un género específico que no están inscritos en un torneo determinado.",
-     *      description="Registers a new player with the specified details. Requires JWT token for authentication.",
+     *     description="Este endpoint devuelve una lista de jugadores de un género específico que no están inscritos en un torneo determinado. Requiere un token JWT para la autenticación.",
      *     security={{"bearerAuth": {}}},
      *     @OA\Parameter(
      *         name="gender",
@@ -344,6 +347,7 @@ class PlayerController extends Controller
                 "data" => $players,
             ]);
         } catch (\Exception $e) {
+            info($e->getMessage(), $e->getLine());
             return response()->json(
                 [
                     "status" => GeneralStatusResponse::ERROR,

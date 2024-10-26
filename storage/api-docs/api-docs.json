@@ -1,7 +1,8 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "My Api documentation Att Edwin Mogollon",
+        "title": "GeoPagos Reto Api. Edwin Jose Mogollon Escalona eJme1992",
+        "description": "Documentación de la API para la gestión de torneos",
         "version": "1.0.0"
     },
     "paths": {
@@ -67,53 +68,111 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Log in a user",
-                "description": "Loguea un usuario admin.",
-                "operationId": "loginUser",
+                "summary": "Login a user",
+                "description": "Logs in a user with the specified email and password.",
+                "operationId": "2dd578ff7aba2721293dac66833b27d1",
                 "requestBody": {
-                    "description": "User log in",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
                                 "properties": {
                                     "email": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user@example.com"
                                     },
                                     "password": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
                                     }
                                 },
-                                "type": "object",
-                                "example": {
-                                    "email": "user@prueba.com",
-                                    "password": "password"
-                                }
+                                "type": "object"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "successful operation",
+                        "description": "User logged in successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "token": {
-                                            "type": "string"
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "msj": {
+                                            "type": "string",
+                                            "example": "Login successful"
+                                        },
+                                        "data": {
+                                            "description": "User data",
+                                            "type": "object"
                                         }
                                     },
-                                    "type": "object",
-                                    "example": {
-                                        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
-                                    }
+                                    "type": "object"
                                 }
                             }
                         }
                     },
                     "400": {
-                        "description": "Invalid email/password supplied"
+                        "description": "Validation error or user not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 400
+                                        },
+                                        "msj": {
+                                            "type": "string",
+                                            "example": "Login failed"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "email": [
+                                                    "The email field is required."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal server error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -124,52 +183,106 @@
                     "Auth"
                 ],
                 "summary": "Register a new user",
-                "description": "Registra un usuario Admin.",
-                "operationId": "registerUser",
+                "description": "Registers a new user with the specified email and password.",
+                "operationId": "0903f2e0df1a8857bee538fc055417f0",
                 "requestBody": {
-                    "description": "User registration",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
                                 "properties": {
                                     "email": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user@example.com"
                                     },
                                     "password": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
                                     }
                                 },
-                                "type": "object",
-                                "example": {
-                                    "email": "user@prueba.com",
-                                    "password": "password"
-                                }
+                                "type": "object"
                             }
                         }
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "successful operation",
+                    "201": {
+                        "description": "User registered successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "message": {
-                                            "type": "string"
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 201
+                                        },
+                                        "msj": {
+                                            "type": "string",
+                                            "example": "User registered successfully"
                                         }
                                     },
-                                    "type": "object",
-                                    "example": {
-                                        "message": "User registered successfully"
-                                    }
+                                    "type": "object"
                                 }
                             }
                         }
                     },
                     "400": {
-                        "description": "Invalid input"
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 400
+                                        },
+                                        "msj": {
+                                            "type": "string",
+                                            "example": "Registration failed"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "email": [
+                                                    "The email field is required."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal server error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -180,7 +293,7 @@
                     "Genders"
                 ],
                 "summary": "Obtener todos los géneros",
-                "description": "Registers a new player with the specified details. Requires JWT token for authentication.",
+                "description": "Devuelve una lista de todos los géneros con los campos `slug` y `name`. Requiere un token JWT para la autenticación.",
                 "operationId": "1f169fd9e839946d4eba1e327918c485",
                 "responses": {
                     "200": {
@@ -268,11 +381,19 @@
                                     },
                                     "atributesPlayer": {
                                         "description": "Attributes of the player as key-value pairs",
-                                        "type": "object",
-                                        "additionalProperties": {
-                                            "description": "Value associated with the attribute key",
-                                            "type": "number"
-                                        }
+                                        "properties": {
+                                            "strength": {
+                                                "description": "Strength attribute of the player",
+                                                "type": "number",
+                                                "example": 5
+                                            },
+                                            "speed": {
+                                                "description": "Speed attribute of the player",
+                                                "type": "number",
+                                                "example": 5
+                                            }
+                                        },
+                                        "type": "object"
                                     }
                                 },
                                 "type": "object"
@@ -314,10 +435,17 @@
                                                 },
                                                 "atributesPlayer": {
                                                     "description": "Attributes of the player as key-value pairs",
-                                                    "type": "object",
-                                                    "additionalProperties": {
-                                                        "type": "number"
-                                                    }
+                                                    "properties": {
+                                                        "strength": {
+                                                            "type": "number",
+                                                            "example": 5
+                                                        },
+                                                        "speed": {
+                                                            "type": "number",
+                                                            "example": 5
+                                                        }
+                                                    },
+                                                    "type": "object"
                                                 }
                                             },
                                             "type": "object"
@@ -400,7 +528,7 @@
                     "Players"
                 ],
                 "summary": "Obtiene una lista de jugadores según el género",
-                "description": "Registers a new player with the specified details. Requires JWT token for authentication.",
+                "description": "Obtiene una lista de jugadores según el género especificado. Requiere un token JWT para la autenticación.",
                 "operationId": "f716f06b41148f4da18546a022d9e623",
                 "parameters": [
                     {
@@ -508,7 +636,7 @@
                     "Players"
                 ],
                 "summary": "Obtiene jugadores por género que no están en el torneo",
-                "description": "Registers a new player with the specified details. Requires JWT token for authentication.",
+                "description": "Este endpoint devuelve una lista de jugadores de un género específico que no están inscritos en un torneo determinado. Requiere un token JWT para la autenticación.",
                 "operationId": "6d0367e698ad95b5f930817cf7ac5c3a",
                 "parameters": [
                     {

@@ -17,12 +17,12 @@ class GenderController extends Controller
         $this->genderRepository = $genderRepository;
     }
 
+      
     /**
      * @OA\Get(
      *     path="/api/genders/all",
      *     summary="Obtener todos los géneros",
-     *     description="Devuelve una lista de todos los géneros con los campos `slug` y `name`.",
-     *     description="Registers a new player with the specified details. Requires JWT token for authentication.",
+     *     description="Devuelve una lista de todos los géneros con los campos `slug` y `name`. Requiere un token JWT para la autenticación.",
      *     security={{"bearerAuth": {}}},
      *     tags={"Genders"},
      *     @OA\Response(

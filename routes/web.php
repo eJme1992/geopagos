@@ -2,6 +2,21 @@
 
 use Illuminate\Support\Facades\Route;
 
+/**
+ * @OA\Info(
+ *     title="API de Torneos",
+ *     version="1.0.0",
+ *     description="Documentación de la API para la gestión de torneos"
+ * )
+ */
+
+/**
+ * @OA\Server(
+ *     url=L5_SWAGGER_CONST_HOST,
+ *     description="Servidor API"
+ * )
+ */
+
 use App\Http\Middleware\ApiAuthMiddleware;
 
 use App\Http\Controllers\AuthController;

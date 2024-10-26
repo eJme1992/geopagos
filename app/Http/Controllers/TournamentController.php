@@ -98,12 +98,13 @@ class TournamentController extends Controller
 
             return response()->json(
                 [
-                    "success" => GeneralStatusResponse::SUCCESS,
+                    "status" => GeneralStatusResponse::SUCCESS,
                     "data" => $tournament,
                 ],
                 HttpStatusCodes::CREATED
             );
         } catch (\Exception $e) {
+            info($e->getMessage(), $e->getLine());
             return response()->json(["error" => $e->getMessage()], 500);
         }
     }
@@ -188,12 +189,13 @@ class TournamentController extends Controller
 
             return response()->json(
                 [
-                    "success" => GeneralStatusResponse::SUCCESS,
+                    "status" => GeneralStatusResponse::SUCCESS,
                     "data" => $tournamentPlayer,
                 ],
                 HttpStatusCodes::CREATED
             );
         } catch (\Exception $e) {
+            info($e->getMessage(), $e->getLine());
             return response()->json(["error" => $e->getMessage()], 500);
         }
     }
@@ -232,13 +234,13 @@ class TournamentController extends Controller
     public function tournamentIsComplete(int $tournamentId): JsonResponse
     {
         try {
-            if (!$this->tournamentService->tournamentIsCreated($tournamentId)) {
-                return response()->json(false, HttpStatusCodes::BAD_REQUEST);
-            }
             $response = $this->tournamentService->tournamentIsComplete(
                 $tournamentId
             );
-            return response()->json($response, HttpStatusCodes::OK);
+            return response()->json(
+                ["status" => GeneralStatusResponse::SUCCESS, "isComplete" => $response],
+                HttpStatusCodes::OK
+            );
         } catch (\Exception $e) {
             return response()->json(["error" => $e->getMessage()],  HttpStatusCodes::INTERNAL_SERVER_ERROR);
         }
@@ -295,6 +297,7 @@ class TournamentController extends Controller
                 "data" => $tournaments,
             ]);
         } catch (\Exception $e) {
+            info($e->getMessage(), $e->getLine());
             return response()->json(["error" => $e->getMessage()], HttpStatusCodes::INTERNAL_SERVER_ERROR);
         }
     }

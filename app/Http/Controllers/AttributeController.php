@@ -16,12 +16,8 @@ class AttributeController extends Controller
         $this->attributeRepository = $attributeRepository;
     }
 
+    
     /**
-     * Get attributes by gender.
-     *
-     * @param string $gender
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @OA\Get(
      *     path="/api/genders/attributes/{gender}",
      *     summary="Get attributes by gender",
@@ -49,8 +45,7 @@ class AttributeController extends Controller
      *         @OA\JsonContent(
      *             @OA\Property(property="error", type="string", example="Error message")
      *         )
-     *     ),
-     *     security={{"bearerAuth": {}}}
+     *     )
      * )
      */
     public function getAttributesByGenderSlug($gender)

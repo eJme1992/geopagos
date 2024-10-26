@@ -132,6 +132,9 @@ class PlayerController extends Controller
                 "status" => GeneralStatusResponse::SUCCESS,
                 "data" => $player,
             ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], HttpStatusCodes::UNPROCESSABLE_ENTITY);
         } catch (\Exception $e) {
             // registrar el error en un log
             info($e->getMessage(), ['line' => $e->getLine()], ['file' => $e->getFile()],);

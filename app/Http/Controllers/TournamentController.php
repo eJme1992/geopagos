@@ -104,10 +104,10 @@ class TournamentController extends Controller
                 HttpStatusCodes::CREATED
             );
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
+            return response()->json(['errors' => $e->errors()], HttpStatusCodes::UNPROCESSABLE_ENTITY);
         } catch (\Exception $e) {
             info($e->getMessage(), ['line' => $e->getLine()]);
-            return response()->json(["error" => $e->getMessage()], 500);
+            return response()->json(["error" => $e->getMessage()], HttpStatusCodes::INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -196,9 +196,11 @@ class TournamentController extends Controller
                 ],
                 HttpStatusCodes::CREATED
             );
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], HttpStatusCodes::UNPROCESSABLE_ENTITY);
         } catch (\Exception $e) {
-                 info($e->getMessage(), ['line' => $e->getLine()], ['file' => $e->getFile()],);
-            return response()->json(["error" => $e->getMessage()], 500);
+            info($e->getMessage(), ['line' => $e->getLine()]);
+            return response()->json(["error" => $e->getMessage()], HttpStatusCodes::INTERNAL_SERVER_ERROR);
         }
     }
 

@@ -9,12 +9,14 @@ use App\Models\Tournament;
 use App\Models\Player;
 use App\Models\TournamentPlayerState;
 use App\Helpers\JwtAuth;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
+
+// vendor/bin/phpunit --filter TournamentControllerTest 
 
 class TournamentControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     protected $jwtAuth;
     private $token;
@@ -43,14 +45,13 @@ class TournamentControllerTest extends TestCase
 
     protected function setUpGenderAndState()
     {
-        Gender::firstOrCreate(['slug' => 'male'], ['name' => 'Male']);
-        TournamentState::firstOrCreate(
+        Gender::updateOrCreate(['slug' => 'male'], ['name' => 'Male']);
+        TournamentState::updateOrCreate(
             ['slug' => 'created'], 
-            ['name' => 'Created'],
-            ['description' => 'Initial state']
+            ['name' => 'Created', 'description' => 'Initial state']
         );
 
-        TournamentPlayerState::firstOrCreate(
+        TournamentPlayerState::updateOrCreate(
             ['slug' => 'pending'], 
             ['name' => 'Pending']
         );

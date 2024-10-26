@@ -7,6 +7,7 @@ use App\Models\Gender;
 use App\Models\TournamentState;
 use App\Models\Tournament;
 use App\Models\Player;
+use App\Models\TournamentPlayerState;
 use App\Helpers\JwtAuth;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -49,6 +50,11 @@ class TournamentControllerTest extends TestCase
             ['description' => 'Initial state']
         );
 
+        TournamentPlayerState::firstOrCreate(
+            ['slug' => 'pending'], 
+            ['name' => 'Pending']
+        );
+
         $this->assertDatabaseHas('genders', [
             'slug' => 'male',
             'name' => 'Male',
@@ -57,6 +63,11 @@ class TournamentControllerTest extends TestCase
         $this->assertDatabaseHas('tournament_states', [
             'slug' => 'created',
             'name' => 'Created',
+        ]);
+
+        $this->assertDatabaseHas('tournament_player_states', [
+            'slug' => 'pending',
+            'name' => 'Pending',
         ]);
     }
 
@@ -136,6 +147,7 @@ class TournamentControllerTest extends TestCase
         $data = [
             'tournament_id' => $tournament->id,
             'player_id' => $player->id,
+            'state_id' => TournamentPlayerState::where('slug', 'pending')->first()->id, // Proporciona el estado
         ];
 
         $response = $this->withHeaders([
@@ -148,6 +160,7 @@ class TournamentControllerTest extends TestCase
         $this->assertDatabaseHas('tournament_players', [
             'tournament_id' => $tournament->id,
             'player_id' => $player->id,
+            'state_id' => TournamentPlayerState::where('slug', 'pending')->first()->id, // Verifica el estado
         ]);
     }
 
@@ -163,11 +176,12 @@ class TournamentControllerTest extends TestCase
         $player2 = Player::factory()->create();
 
         // Registrar el primer jugador
-        $tournament->players()->attach($player1->id);
+        $tournament->players()->attach($player1->id, ['state_id' => TournamentPlayerState::where('slug', 'pending')->first()->id]);
 
         $data = [
             'tournament_id' => $tournament->id,
             'player_id' => $player2->id,
+            'state_id' => TournamentPlayerState::where('slug', 'pending')->first()->id, // Proporciona el estado
         ];
 
         $response = $this->withHeaders([

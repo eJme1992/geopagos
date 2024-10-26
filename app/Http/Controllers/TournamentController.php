@@ -103,8 +103,10 @@ class TournamentController extends Controller
                 ],
                 HttpStatusCodes::CREATED
             );
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
         } catch (\Exception $e) {
-                 info($e->getMessage(), ['line' => $e->getLine()], ['file' => $e->getFile()]);
+            info($e->getMessage(), ['line' => $e->getLine()]);
             return response()->json(["error" => $e->getMessage()], 500);
         }
     }

@@ -7,6 +7,7 @@ use App\Models\Player;
 use App\Models\Repository\Player\IPlayerRepository;
 use App\Models\Repository\PlayerAttribute\IPlayerAttributeRepository;
 use Illuminate\Support\Collection;
+use InvalidArgumentException;
 
 /**
  * @OA\Schema(
@@ -18,21 +19,25 @@ use Illuminate\Support\Collection;
  */
 class PlayerService
 {
-    private   $playerRepository;
-    private   $playerAttributeRepository;
-    
+    private $playerRepository;
+    private $playerAttributeRepository;
 
-    public function __construct(){
-        $this->playerRepository          = app()->make(IPlayerRepository::class);
-        $this->playerAttributeRepository = app()->make(IPlayerAttributeRepository::class);
+    public function __construct(
+        IPlayerRepository $playerRepository,
+        IPlayerAttributeRepository $playerAttributeRepository
+    ) {
+        $this->playerRepository = $playerRepository;
+        $this->playerAttributeRepository = $playerAttributeRepository;
     }
 
-    public function register(PlayerDTO $dto):Player
+    public function register(PlayerDTO $dto): Player
     {
-
-        $player = $this->playerRepository->create($dto->getPlayerData());
-
+        $playerData = $dto->getPlayerData();
         $attributes = $dto->getAtributesData();
+
+        $this->validateAttributes($attributes);
+
+        $player = $this->playerRepository->create($playerData);
 
         foreach ($attributes as $attributeId => $value) {
             $this->playerAttributeRepository->create([
@@ -45,19 +50,36 @@ class PlayerService
         return $player;
     }
 
-    public function getPlayersForGenderSlug(string $slug):?Collection
+    private function validateAttributes(array $attributes): void
     {
-        return $this->playerRepository->getPlayersForGenderSlugs([$slug],['players.name','players.id']);
+        foreach ($attributes as $attributeId => $value) {
+            if (!is_int($attributeId) || !is_numeric($value)) {
+                throw new InvalidArgumentException('Invalid attribute data');
+            }
+        }
+    }
+
+    public function getPlayersForGenderSlug(string $slug): ?Collection
+    {
+        return $this->getPlayersByCriteria([$slug]);
     }
 
     public function getPlayers(): Collection
     {
-        return $this->playerRepository->getPlayersForGenderSlugs([]);
+        return $this->getPlayersByCriteria([]);
     }
 
-    public function getPlayersForGenderSlugNotTournament(string $genderSlug, int $tournamentId):? Collection
+    public function getPlayersForGenderSlugNotTournament(string $genderSlug, int $tournamentId): ?Collection
     {
-        return $this->playerRepository->getPlayersForGenderSlugNotTournament([$genderSlug], $tournamentId,['players.name','players.id']);
+        return $this->playerRepository->getPlayersForGenderSlugNotTournament(
+            [$genderSlug],
+            $tournamentId,
+            ['players.name', 'players.id']
+        );
     }
-  
+
+    private function getPlayersByCriteria(array $slugs): ?Collection
+    {
+        return $this->playerRepository->getPlayersForGenderSlugs($slugs, ['players.name', 'players.id']);
+    }
 }

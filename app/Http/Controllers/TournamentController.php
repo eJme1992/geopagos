@@ -71,7 +71,7 @@ class TournamentController extends Controller
             ]);
 
             if (
-                !$this->tournamentService->numberPlayersValidate(
+                !$this->tournamentService->isValidNumberOfPlayers(
                     $request->input("number_players")
                 )
             ) {
@@ -160,7 +160,7 @@ class TournamentController extends Controller
             ]);
 
             if (
-                $this->tournamentService->tournamentIsComplete(
+                $this->tournamentService->isTournamentComplete(
                     $request->input("tournament_id")
                 )
             ) {
@@ -172,17 +172,7 @@ class TournamentController extends Controller
                 );
             }
 
-            if (
-                $this->tournamentService->tournamentAndPlayerExist(
-                    $request->input("tournament_id"),
-                    $request->input("player_id")
-                )
-            ) {
-                return response()->json(
-                    ["error" =>  TournamentResponseMessages::PLAYER_ALREADY_REGISTERED],
-                    HttpStatusCodes::BAD_REQUEST
-                );
-            }
+           
 
             $tournamentPlayer = $this->tournamentService->registerPlayer(
                 $request->input("tournament_id"),
@@ -238,7 +228,7 @@ class TournamentController extends Controller
     public function tournamentIsComplete(int $tournamentId): JsonResponse
     {
         try {
-            $response = $this->tournamentService->tournamentIsComplete(
+            $response = $this->tournamentService->isTournamentComplete(
                 $tournamentId
             );
             return response()->json(

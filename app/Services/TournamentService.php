@@ -2,19 +2,14 @@
 
 namespace App\Services;
 
-
 use Illuminate\Support\Collection;
-
-use App\DTOs\PlayerDTO;
-use App\Models\Player;
+use App\Models\Tournament;
 use App\Models\Repository\Gender\IGenderRepository;
 use App\Models\Repository\Player\IPlayerRepository;
-use App\Models\Repository\PlayerAttribute\IPlayerAttributeRepository;
 use App\Models\Repository\Tournament\ITournamentRepository;
 use App\Models\Repository\Tournament\ITournamentPlayerRepository;
 use App\Models\Repository\Tournament\ITournamentPlayerStateRepository;
 use App\Models\Repository\Tournament\ITournamentStateRepository;
-use App\Models\Tournament;
 
 /**
  * @OA\Schema(
@@ -26,133 +21,113 @@ use App\Models\Tournament;
  */
 class TournamentService
 {
-    private   $playerRepository;
-    private   $tournamentRepository;
-    private   $tournamentPlayerRepository;
-    private   $genderRepository;
-    private   $tournamentStateRepository;
-    private   $tournamentPlayerStateRepository;
+    private $playerRepository;
+    private $tournamentRepository;
+    private $tournamentPlayerRepository;
+    private $genderRepository;
+    private $tournamentStateRepository;
+    private $tournamentPlayerStateRepository;
 
-    public function __construct(){
-        $this->playerRepository                = app()->make(IPlayerRepository::class);
-        $this->tournamentRepository            = app()->make(ITournamentRepository::class);
-        $this->tournamentPlayerRepository      = app()->make(ITournamentPlayerRepository::class);
-        $this->genderRepository                = app()->make(IGenderRepository::class);
-        $this->tournamentStateRepository       = app()->make(ITournamentStateRepository::class);
-        $this->tournamentPlayerStateRepository = app()->make(ITournamentPlayerStateRepository::class);
+    const STATE_CREATED  = 'created';
+    const STATE_COMPLETE = 'complete';
+    const STATE_PENDING  = 'pending';
+
+    public function __construct(
+        IPlayerRepository $playerRepository,
+        ITournamentRepository $tournamentRepository,
+        ITournamentPlayerRepository $tournamentPlayerRepository,
+        IGenderRepository $genderRepository,
+        ITournamentStateRepository $tournamentStateRepository,
+        ITournamentPlayerStateRepository $tournamentPlayerStateRepository
+    ) {
+        $this->playerRepository = $playerRepository;
+        $this->tournamentRepository = $tournamentRepository;
+        $this->tournamentPlayerRepository = $tournamentPlayerRepository;
+        $this->genderRepository = $genderRepository;
+        $this->tournamentStateRepository = $tournamentStateRepository;
+        $this->tournamentPlayerStateRepository = $tournamentPlayerStateRepository;
     }
 
-    public function register(string $name,string $gender,int $numberPlayers):?Tournament
+    public function register(string $name, string $gender, int $numberPlayers): ?Tournament
     {
-
-        $genderId = $this->genderRepository->findBySlug($gender)->id;
-
-        if(!$genderId) {
+        $genderId = $this->getGenderId($gender);
+        if (!$genderId || !$this->isValidNumberOfPlayers($numberPlayers)) {
             return null;
         }
 
-         if (!$this->numberPlayersValidate($numberPlayers)) {
-              return null;
-         }
+        $state = $this->getStateBySlug(self::STATE_CREATED);
 
-        $state = $this->tournamentStateRepository->findBySlug('created'); // para pasar a constante
-
-        return  $this->tournamentRepository->create(
-                [
-                    'name'           => $name,
-                    'gender_id'      => $genderId,
-                    'number_players' => $numberPlayers,
-                    'state_id'       => $state->id
-                ]
-        );
+        return $this->tournamentRepository->create([
+            'name' => $name,
+            'gender_id' => $genderId,
+            'number_players' => $numberPlayers,
+            'state_id' => $state->id,
+        ]);
     }
 
-    public function numberPlayersValidate(int $number_players):bool
+    private function getGenderId(string $gender): ?int
     {
-        if ($number_players % 2 != 0 || $number_players <= 0) {
-            return false;
-        }
-        return true;
+        $gender = $this->genderRepository->findBySlug($gender);
+        return $gender ? $gender->id : null;
     }
 
-    public function tournamentAndPlayerExist(int $tournamentId, int $playerId):bool
+    public function isValidNumberOfPlayers(int $numberPlayers): bool
     {
-        $playerTournament = $this->tournamentPlayerRepository->findByTournamentAndPlayer($tournamentId, $playerId);
-
-        if ($playerTournament) {
-            return true;
-        }
-
-        return false;
+        return $numberPlayers > 0 && $numberPlayers % 2 === 0;
     }
 
-    public function registerPlayer(int $tournamentId, int $playerId):bool
+    private function getStateBySlug(string $slug)
+    {
+        return $this->tournamentStateRepository->findBySlug($slug);
+    }
+
+
+
+    public function registerPlayer(int $tournamentId, int $playerId): bool
     {
         $tournament = $this->tournamentRepository->find($tournamentId);
-        $player     = $this->playerRepository->find($playerId);
+        $player = $this->playerRepository->find($playerId);
 
-        if (!$tournament || !$player) {
+        if (!$tournament || !$player || !$this->isTournamentCreated($tournament) || $this->isPlayerInTournament($tournamentId, $playerId)) {
             return false;
         }
+
+        $state = $this->tournamentPlayerStateRepository->findBySlug(self::STATE_PENDING);
         
-        if (!$this->tournamentIsCreated($tournamentId)) {
-            return false;
-        }
+        $this->tournamentPlayerRepository->create([
+            'tournament_id' => $tournamentId,
+            'player_id' => $playerId,
+            'state_id' => $state->id,
+        ]);
 
-        if ($this->tournamentAndPlayerExist($tournamentId, $playerId)) {
-            return false;
-        }
-
-        $state = $this->tournamentPlayerStateRepository->findBySlug('pending'); // pending, winner, loser pasar a constante
-
-        $this->tournamentPlayerRepository->create(
-            [
-                'tournament_id' => $tournamentId,
-                'player_id'     => $playerId,
-                'state_id'      => $state->id
-            ]
-        );
-
-        if ($this->tournamentIsComplete($tournamentId)) {
-            $state = $this->tournamentStateRepository->findBySlug('complete'); // pending, winner, loser pasar a constante
-            $this->tournamentRepository->update(
-                [
-                    'state_id'      => $state->id
-                ],$tournamentId
-            );
+        if ($this->isTournamentComplete($tournamentId)) {
+            $state = $this->getStateBySlug(self::STATE_COMPLETE);
+            $this->tournamentRepository->update(['state_id' => $state->id], $tournamentId);
         }
 
         return true;
     }
 
-    
-    public function tournamentIsCreated(int $tournamentId):bool
+    public function isTournamentCreated(Tournament $tournament): bool
     {
-        $tournament = $this->tournamentRepository->find($tournamentId);
-        if ($tournament->state->slug == 'created') {
-            return true;
-        }
-        return false;
+        return $tournament->state->slug === self::STATE_CREATED;
     }
 
-    public function tournamentIsComplete(int $tournamentId):bool
+    public function isPlayerInTournament(int $tournamentId, int $playerId): bool
+    {
+        return (bool) $this->tournamentPlayerRepository->findByTournamentAndPlayer($tournamentId, $playerId);
+    }
+
+    public function isTournamentComplete(int $tournamentId): bool
     {
         $tournament = $this->tournamentRepository->find($tournamentId);
         $players = $this->tournamentPlayerRepository->findByTournament($tournamentId);
-        if ($players->count() == $tournament->number_players) {
-            return true;
-        }
-        return false;
+        return $players->count() === $tournament->number_players;
     }
 
-    public function getTournamentsByGender(string $gender):?Collection
+    public function getTournamentsByGender(string $gender): ?Collection
     {
-        $genderId = $this->genderRepository->findBySlug($gender)->id;
-        if(!$genderId) {
-            return null;
-        }
-        return $this->tournamentRepository->findByGender($genderId);
+        $genderId = $this->getGenderId($gender);
+        return $genderId ? $this->tournamentRepository->findByGender($genderId) : null;
     }
-
-  
 }

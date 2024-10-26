@@ -104,7 +104,7 @@ class TournamentController extends Controller
                 HttpStatusCodes::CREATED
             );
         } catch (\Exception $e) {
-            info($e->getMessage(), $e->getLine());
+                 info($e->getMessage(), ['line' => $e->getLine()], ['file' => $e->getFile()]);
             return response()->json(["error" => $e->getMessage()], 500);
         }
     }
@@ -195,7 +195,7 @@ class TournamentController extends Controller
                 HttpStatusCodes::CREATED
             );
         } catch (\Exception $e) {
-            info($e->getMessage(), $e->getLine());
+                 info($e->getMessage(), ['line' => $e->getLine()], ['file' => $e->getFile()],);
             return response()->json(["error" => $e->getMessage()], 500);
         }
     }
@@ -297,7 +297,7 @@ class TournamentController extends Controller
                 "data" => $tournaments,
             ]);
         } catch (\Exception $e) {
-            info($e->getMessage(), $e->getLine());
+                 info($e->getMessage(), ['line' => $e->getLine()], ['file' => $e->getFile()]);
             return response()->json(["error" => $e->getMessage()], HttpStatusCodes::INTERNAL_SERVER_ERROR);
         }
     }

@@ -134,7 +134,7 @@ class PlayerController extends Controller
             ]);
         } catch (\Exception $e) {
             // registrar el error en un log
-            info($e->getMessage(), $e->getLine());
+            info($e->getMessage(), ['line' => $e->getLine()], ['file' => $e->getFile()],);
             return response()->json(
                 [
                     "status" => GeneralStatusResponse::ERROR,
@@ -257,7 +257,7 @@ class PlayerController extends Controller
                 "data" => $players,
             ]);
         } catch (\Exception $e) {
-            info($e->getMessage(), $e->getLine());
+            info($e->getMessage(), ['line' => $e->getLine()], ['file' => $e->getFile()],);
             return response()->json(
                 [
                     "status" => GeneralStatusResponse::ERROR,
@@ -347,7 +347,7 @@ class PlayerController extends Controller
                 "data" => $players,
             ]);
         } catch (\Exception $e) {
-            info($e->getMessage(), $e->getLine());
+            info($e->getMessage(), ['line' => $e->getLine()], ['file' => $e->getFile()],);
             return response()->json(
                 [
                     "status" => GeneralStatusResponse::ERROR,

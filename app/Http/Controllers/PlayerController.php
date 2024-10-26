@@ -240,12 +240,12 @@ class PlayerController extends Controller
      *     )
      * )
      */
-    public function getPlayersForGender(string $gander): JsonResponse
+    public function getPlayersForGender(string $gender): JsonResponse
     {
         try {
-            $players = $this->playerService->getPlayersForGenderSlug($gander);
+            $players = $this->playerService->getPlayersForGenderSlug($gender);
 
-            if (empty($players)) {
+            if ($players->isEmpty()) {
                 return response()->json(
                     [
                         "status" => GeneralStatusResponse::ERROR,
@@ -260,7 +260,7 @@ class PlayerController extends Controller
                 "data" => $players,
             ]);
         } catch (\Exception $e) {
-            info($e->getMessage(), ['line' => $e->getLine()], ['file' => $e->getFile()],);
+            info($e->getMessage(), ['line' => $e->getLine(), 'file' => $e->getFile()]);
             return response()->json(
                 [
                     "status" => GeneralStatusResponse::ERROR,
@@ -325,17 +325,12 @@ class PlayerController extends Controller
      *     )
      * )
      */
-    public function getPlayersForGenderNotTournament(
-        string $gender,
-        int $tournamentId
-    ): JsonResponse {
+    public function getPlayersForGenderNotTournament(string $gender, int $tournamentId): JsonResponse
+    {
         try {
-            $players = $this->playerService->getPlayersForGenderSlugNotTournament(
-                $gender,
-                $tournamentId
-            );
+            $players = $this->playerService->getPlayersForGenderSlugNotTournament($gender, $tournamentId);
 
-            if (empty($players)) {
+            if ($players->isEmpty()) {
                 return response()->json(
                     [
                         "status" => GeneralStatusResponse::ERROR,
@@ -350,7 +345,7 @@ class PlayerController extends Controller
                 "data" => $players,
             ]);
         } catch (\Exception $e) {
-            info($e->getMessage(), ['line' => $e->getLine()], ['file' => $e->getFile()],);
+            info($e->getMessage(), ['line' => $e->getLine(), 'file' => $e->getFile()]);
             return response()->json(
                 [
                     "status" => GeneralStatusResponse::ERROR,

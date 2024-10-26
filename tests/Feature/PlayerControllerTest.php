@@ -11,6 +11,7 @@ use App\Constants\HttpStatusCodes;
 use App\Constants\ErrorMessages\GeneralStatusResponse;
 use App\Constants\ErrorMessages\GeneralErrorMessages;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Collection;
 use Tests\TestCase;
 use Mockery;
 
@@ -125,11 +126,12 @@ class PlayerControllerTest extends TestCase
     {
         $gender = 'male';
         $players = Player::factory()->count(3)->make();
+        $playersCollection = new Collection($players);
 
         $this->playerService
             ->shouldReceive('getPlayersForGenderSlug')
             ->with($gender)
-            ->andReturn($players);
+            ->andReturn($playersCollection);
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $this->token,
@@ -146,12 +148,12 @@ class PlayerControllerTest extends TestCase
 
     public function test_get_players_for_gender_not_found()
     {
-        $gender = 'male';
+        $gender = 'famale';
 
         $this->playerService
             ->shouldReceive('getPlayersForGenderSlug')
             ->with($gender)
-            ->andReturn([]);
+            ->andReturn(new Collection());
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $this->token,
@@ -171,11 +173,12 @@ class PlayerControllerTest extends TestCase
         $gender = 'male';
         $tournamentId = 1;
         $players = Player::factory()->count(3)->make();
+        $playersCollection = new Collection($players);
 
         $this->playerService
             ->shouldReceive('getPlayersForGenderSlugNotTournament')
             ->with($gender, $tournamentId)
-            ->andReturn($players);
+            ->andReturn($playersCollection);
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $this->token,
@@ -198,7 +201,7 @@ class PlayerControllerTest extends TestCase
         $this->playerService
             ->shouldReceive('getPlayersForGenderSlugNotTournament')
             ->with($gender, $tournamentId)
-            ->andReturn([]);
+            ->andReturn(new Collection());
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $this->token,

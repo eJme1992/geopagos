@@ -15,8 +15,12 @@ RUN apt-get update && apt-get install -y \
 # Configura la carpeta raíz del proyecto en Apache
 RUN a2enmod rewrite
 
+# Configura ServerName en Apache para evitar advertencias
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
+
 # Copia el archivo de configuración de PHP
-COPY php.ini /usr/local/etc/php/php.ini
+COPY docker/php.ini /usr/local/etc/php/php.ini
 
 # Instala Composer
 COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer
@@ -38,14 +42,14 @@ RUN apt-get update && apt-get install -y default-mysql-client
 
 
 # Copia el script init.sh y establece los permisos
-COPY init.sh /usr/local/bin/init.sh
+COPY docker/init.sh /usr/local/bin/init.sh
 RUN chmod +x /usr/local/bin/init.sh
 
 # Instala las dependencias de Composer
 RUN composer install
 
 # Copia el script de entrada
-COPY entrypoint.sh /usr/local/bin/
+COPY docker/entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Establece el script de entrada y el comando por defecto

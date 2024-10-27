@@ -11,4 +11,5 @@ echo "MySQL está disponible. Ejecutando migraciones..."
 
 # Ejecuta las migraciones y seeder
 cd /var/www/html
+php artisan key:generate
 php artisan migrate:fresh --seed

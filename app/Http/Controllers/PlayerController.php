@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Constants\ErrorMessages\GeneralErrorMessages;
-use App\Constants\ErrorMessages\GeneralStatusResponse;
+use App\Constants\GeneralStatusResponse;
 use App\Factories\PlayerDTOFactory;
 use App\Models\Repository\Gender\IGenderRepository;
 use Illuminate\Http\Request;

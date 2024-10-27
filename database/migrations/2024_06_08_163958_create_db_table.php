@@ -31,6 +31,7 @@ return new class extends Migration
                     $table->string('name');
                     $table->foreignId('gender_id')->constrained('genders');
                     $table->integer('ability')->default(0);
+                    // almancena json
                     $table->timestamps();
                 });
         
@@ -41,6 +42,7 @@ return new class extends Migration
                     $table->foreignId('gender_id')->constrained('genders');
                     $table->foreignId('state_id')->constrained('tournament_states');
                     $table->integer('number_players');
+                    $table->foreignId('winner_id')->nullable()->constrained('players');
                     $table->timestamps();
                 });
         
@@ -88,6 +90,7 @@ return new class extends Migration
                     $table->foreignId('winner_id')->nullable()->constrained('players');
                     $table->foreignId('loser_id')->nullable()->constrained('players');
                     $table->integer('round');
+                    $table->json('details')->nullable();
                     $table->timestamps();
                 });
             }

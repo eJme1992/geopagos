@@ -31,4 +31,5 @@ class PlayerRepository extends AbstractRepository implements IPlayerRepository {
 		->whereIn('genders.slug', $slugs)
 		->get();
 	}
+ 
 }

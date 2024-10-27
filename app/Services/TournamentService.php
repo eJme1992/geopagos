@@ -2,14 +2,17 @@
 
 namespace App\Services;
 
+use App\Models\Play;
 use Illuminate\Support\Collection;
 use App\Models\Tournament;
 use App\Models\Repository\Gender\IGenderRepository;
+use App\Models\Repository\Play\IPlayRepository;
 use App\Models\Repository\Player\IPlayerRepository;
 use App\Models\Repository\Tournament\ITournamentRepository;
 use App\Models\Repository\Tournament\ITournamentPlayerRepository;
 use App\Models\Repository\Tournament\ITournamentPlayerStateRepository;
 use App\Models\Repository\Tournament\ITournamentStateRepository;
+use App\Services\PlayService;
 
 /**
  * @OA\Schema(
@@ -27,6 +30,7 @@ class TournamentService
     private $genderRepository;
     private $tournamentStateRepository;
     private $tournamentPlayerStateRepository;
+    private $playService;
 
     const STATE_CREATED  = 'created';
     const STATE_COMPLETE = 'complete';
@@ -38,7 +42,9 @@ class TournamentService
         ITournamentPlayerRepository $tournamentPlayerRepository,
         IGenderRepository $genderRepository,
         ITournamentStateRepository $tournamentStateRepository,
-        ITournamentPlayerStateRepository $tournamentPlayerStateRepository
+        ITournamentPlayerStateRepository $tournamentPlayerStateRepository,
+        IPlayRepository $playRepository,
+        PlayService $playService    
     ) {
         $this->playerRepository = $playerRepository;
         $this->tournamentRepository = $tournamentRepository;
@@ -46,6 +52,7 @@ class TournamentService
         $this->genderRepository = $genderRepository;
         $this->tournamentStateRepository = $tournamentStateRepository;
         $this->tournamentPlayerStateRepository = $tournamentPlayerStateRepository;
+        $this->playService = $playService;
     }
 
     public function register(string $name, string $gender, int $numberPlayers): ?Tournament
@@ -129,5 +136,52 @@ class TournamentService
     {
         $genderId = $this->getGenderId($gender);
         return $genderId ? $this->tournamentRepository->findByGender($genderId) : null;
+    }
+
+     
+    public function startTournament(int $tournamentId): ?Tournament
+    {
+        $tournament = $this->tournamentRepository->find($tournamentId);
+        if (!$tournament || !$this->isTournamentComplete($tournamentId)) {
+            return null;
+        }
+    
+        $round = 1;
+        do {
+            $players = $this->tournamentPlayerRepository->findByTournament($tournamentId, ['pending', 'winner']);
+            $count = $players->count();
+    
+            if ($count > 1) {
+                $this->processRound($players, $tournament, $round);
+                $round++;
+            } else {
+                $winnerId = $players->first()->player_id;
+            }
+        } while ($players->count() > 1);
+    
+        $this->completeTournament($tournamentId, $winnerId);
+    
+        return $this->tournamentRepository->find($tournamentId);
+    }
+    
+    private function processRound($players, Tournament $tournament, int $round): void
+    {
+        $playersArray = $players->pluck('player_id')->toArray();
+        $count = count($playersArray);
+    
+        for ($i = 0; $i < $count; $i += 2) {
+            if (isset($playersArray[$i]) && isset($playersArray[$i + 1])) {
+                $this->playService->play($playersArray[$i], $playersArray[$i + 1], $tournament, $round);
+            }
+        }
+    }
+    
+    private function completeTournament(int $tournamentId, int $winnerId): void
+    {
+        $state = $this->getStateBySlug(self::STATE_COMPLETE);
+        $this->tournamentRepository->update([
+            'state_id' => $state->id,
+            'winner_id' => $winnerId
+        ], $tournamentId);
     }
 }

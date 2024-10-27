@@ -9,7 +9,7 @@ class Play extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['player1_id', 'player2_id', 'winner_id', 'loser_id', 'round'];
+    protected $fillable = ['player1_id', 'player2_id', 'winner_id', 'loser_id', 'round', 'details', 'tournament_id'];
 
     // Relación con Player (Jugador 1)
     public function player1()
@@ -33,5 +33,11 @@ class Play extends Model
     public function loser()
     {
         return $this->belongsTo(Player::class, 'loser_id');
+    }
+
+    // Relación con Tournament
+    public function tournament()
+    {
+        return $this->belongsTo(Tournament::class);
     }
 }

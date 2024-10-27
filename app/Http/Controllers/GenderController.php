@@ -6,7 +6,7 @@ use App\Models\Repository\Gender\IGenderRepository;
 use Illuminate\Http\Request;
 
 use App\Constants\HttpStatusCodes;
-use App\Constants\ErrorMessages\GeneralStatusResponse;
+use App\Constants\GeneralStatusResponse;
 
 class GenderController extends Controller
 {

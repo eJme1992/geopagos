@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Models\Gender;
 use App\Helpers\JwtAuth;
 use App\Constants\HttpStatusCodes;
-use App\Constants\ErrorMessages\GeneralStatusResponse;
+use App\Constants\GeneralStatusResponse;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use Mockery;

@@ -7,8 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 use App\Constants\HttpStatusCodes;
-use App\Constants\ErrorMessages\GeneralStatusResponse;
+use App\Constants\GeneralStatusResponse;
 use App\Constants\Messages\TournamentResponseMessages;
+use Illuminate\Support\Facades\Validator;
 
 
 class TournamentController extends Controller
@@ -292,6 +293,71 @@ class TournamentController extends Controller
             ]);
         } catch (\Exception $e) {
                  info($e->getMessage(), ['line' => $e->getLine()], ['file' => $e->getFile()]);
+            return response()->json(["error" => $e->getMessage()], HttpStatusCodes::INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/tournaments/{tournamentId}/start",
+     *     summary="Iniciar un torneo",
+     *     description="Inicia un torneo dado su ID. Requiere un token JWT para la autenticación.",
+     *     security={{"bearerAuth": {}}},
+     *     tags={"Tournaments"},
+     *     @OA\Parameter(
+     *         name="tournamentId",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="ID del torneo a iniciar"
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Torneo iniciado exitosamente",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="Success"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Solicitud incorrecta",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="error", type="string", example="Validation error")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="error", type="string", example="Internal server error")
+     *         )
+     *     )
+     * )
+     */
+    public function startTournament(int $tournamentId): JsonResponse
+    {
+        try {
+            $validator = Validator::make(['tournamentId' => $tournamentId], [
+                "tournament_id" => "required|integer|exists:tournaments,id",
+            ]);
+    
+            if ($validator->fails()) {
+                return response()->json(
+                    ["error" => $validator->errors()],
+                    HttpStatusCodes::BAD_REQUEST
+                );
+            }
+    
+            $response = $this->tournamentService->startTournament($tournamentId);
+            return response()->json(
+                ["status" => GeneralStatusResponse::SUCCESS, "data" => $response],
+                HttpStatusCodes::OK
+            );
+        } catch (\Exception $e) {
             return response()->json(["error" => $e->getMessage()], HttpStatusCodes::INTERNAL_SERVER_ERROR);
         }
     }

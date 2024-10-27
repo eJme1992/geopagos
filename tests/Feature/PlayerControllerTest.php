@@ -8,7 +8,7 @@ use App\Models\Player;
 use App\DTOs\PlayerDTO;
 use App\Helpers\JwtAuth;
 use App\Constants\HttpStatusCodes;
-use App\Constants\ErrorMessages\GeneralStatusResponse;
+use App\Constants\GeneralStatusResponse;
 use App\Constants\ErrorMessages\GeneralErrorMessages;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Collection;

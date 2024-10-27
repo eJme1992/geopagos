@@ -9,7 +9,9 @@ class Tournament extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'gender_id', 'state_id', 'number_players'];
+    protected $fillable = ['name', 'gender_id', 'state_id', 'number_players','winner_id'];
+
+    protected $winth = ['players'];
 
     // Relación con Players (many-to-many)
     public function players()
@@ -29,5 +31,11 @@ class Tournament extends Model
     public function state()
     {
         return $this->belongsTo(TournamentState::class, 'state_id');
+    }
+
+    // Relación con Player (winner)
+    public function winner()
+    {
+        return $this->belongsTo(Player::class, 'winner_id');
     }
 }

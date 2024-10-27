@@ -1065,10 +1065,94 @@
                     }
                 ]
             }
+        },
+        "/api/tournaments/{tournamentId}/start": {
+            "post": {
+                "tags": [
+                    "Tournaments"
+                ],
+                "summary": "Iniciar un torneo",
+                "description": "Inicia un torneo dado su ID. Requiere un token JWT para la autenticación.",
+                "operationId": "057443fcc9f5444529b084abc6b400b0",
+                "parameters": [
+                    {
+                        "name": "tournamentId",
+                        "in": "path",
+                        "description": "ID del torneo a iniciar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Torneo iniciado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "Success"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Solicitud incorrecta",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Validation error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Internal server error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
         "schemas": {
+            "PlayService": {
+                "title": "Play Service",
+                "description": "Service for managing Play",
+                "type": "object"
+            },
             "PlayerService": {
                 "title": "Player Service",
                 "description": "Service for managing players",

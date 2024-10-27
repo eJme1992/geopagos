@@ -2,7 +2,7 @@
 
 namespace App\DTOs;
 
-class PlayerDTO {
+class PlayerDTO  {
     
     private $name;
     private $genderId;
@@ -22,6 +22,18 @@ class PlayerDTO {
             'gender_id'   => $this->genderId,
             'ability'     => $this->ability,
         ];
+    }
+
+    public function getName(): string {
+        return $this->name;
+    }
+
+    public function getGenderId(): int {
+        return $this->genderId;
+    }
+
+    public function getAbility(): int {
+        return $this->ability;
     }
 
     public function getAtributesData(): array {

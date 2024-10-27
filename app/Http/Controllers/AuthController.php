@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Repository\User\IUserRepository;
 use App\Constants\HttpStatusCodes;
-use App\Constants\ErrorMessages\GeneralStatusResponse;
+use App\Constants\GeneralStatusResponse;
 use App\Constants\Messages\AuthResponseMessages;
 use App\Helpers\JwtAuth;
 

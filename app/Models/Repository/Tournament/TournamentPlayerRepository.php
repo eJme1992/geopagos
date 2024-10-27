@@ -3,6 +3,7 @@
 use App\Models\Repository\Tournament\ITournamentPlayerRepository;
 use App\Models\Repository\Repository as AbstractRepository;
 use App\Models\TournamentPlayer;
+use Illuminate\Support\Collection;
 
 class TournamentPlayerRepository extends AbstractRepository implements ITournamentPlayerRepository {
 	protected $modelClassName = 'App\Models\TournamentPlayer';
@@ -14,9 +15,25 @@ class TournamentPlayerRepository extends AbstractRepository implements ITourname
             ->first();
     }
 
-    public function findByTournament(int $tournamentId)
+     public function findByTournament(int $tournamentId,array $statesSlug = array('')):?Collection
     {
-        return $this->model->where('tournament_id', $tournamentId)->get();
+        $query = $this->model->select('tournament.*')
+        ->where('tournament_id', $tournamentId);
+        
+        if(!empty($statesSlug)){
+            $query->join('tournament_states', 'tournament_states.id', '=', 'tournament_players.status');
+            $query->whereIn('status', $statesSlug);
+        }
+        $query->get();
+    }
+
+    public function updateStatus(int $tournamentId, int $playerId, string $status):?TournamentPlayer
+    {
+        $tournamentPlayer = $this->findByTournamentAndPlayer($tournamentId, $playerId);
+        $tournamentPlayer->status = $status;
+        $tournamentPlayer->save();
+        return $tournamentPlayer;
     }
 
 }
+ 

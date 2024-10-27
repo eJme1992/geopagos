@@ -33,15 +33,10 @@ class Player extends Model
                     ->withTimestamps();
     }
 
-    // Relación con Plays (Partidas jugadas)
-    public function playsAsPlayer1()
+    public function plays()
     {
-        return $this->hasMany(Play::class, 'player1_id');
-    }
-
-    public function playsAsPlayer2()
-    {
-        return $this->hasMany(Play::class, 'player2_id');
+        return $this->hasMany(Play::class, 'player1_id')
+                    ->orWhere('player2_id', $this->id);
     }
 
     // Relación con Plays (ganador/perdedor)

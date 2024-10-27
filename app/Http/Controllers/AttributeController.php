@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Repository\Attribute\IAttributeRepository;
 use Illuminate\Http\Request;
 use App\Constants\HttpStatusCodes;
-use App\Constants\ErrorMessages\GeneralStatusResponse;
+use App\Constants\GeneralStatusResponse;
 
 class AttributeController extends Controller
 {

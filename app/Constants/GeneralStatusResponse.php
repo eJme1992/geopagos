@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Constants\ErrorMessages;
+namespace App\Constants;
 
 class GeneralStatusResponse {
     const ERROR   = 'Error';

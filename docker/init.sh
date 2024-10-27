@@ -19,3 +19,4 @@ echo "Migraciones y seeders ejecutados correctamente."
 
 # Iniciar Apache
 exec apache2-foreground
+

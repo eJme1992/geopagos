@@ -5,6 +5,90 @@
 ### Requisitos previos
 - Tener Docker y Docker Compose instalados en tu equipo.
 
+### Configuración del entorno
+1. Clona el repositorio del proyecto en tu máquina local.
+2. Accede a la carpeta del proyecto:
+
+   ```bash
+   cd ruta/al/proyecto
+   ```
+
+3. Asegúrate de que el archivo `docker-compose.yml` esté en la raíz.
+
+### Construcción y ejecución de contenedores
+1. Ejecuta el siguiente comando para construir y ejecutar los contenedores:
+
+   ```bash
+   docker-compose up -d --build
+   ```
+
+   Esto levantará los contenedores en segundo plano y realizará automáticamente las migraciones de la base de datos si la configuración del archivo `.env` de Laravel está correcta.
+
+   Archivo env 
+
+    APP_NAME=Laravel
+    APP_ENV=local
+    APP_KEY=base64:YOUR_APP_KEY
+    APP_DEBUG=true
+    APP_URL=http://localhost
+
+    LOG_CHANNEL=stack
+
+    DB_CONNECTION=mysql
+    DB_HOST=db
+    DB_PORT=3306
+    DB_DATABASE=laravel
+    DB_USERNAME=laravel
+DB_PASSWORD=secret
+
+
+### Acceso al contenedor de la aplicación
+1. Una vez que los contenedores estén en ejecución, accede al contenedor de la aplicación con el siguiente comando:
+
+   ```bash
+   docker exec -it nombre_del_contenedor_php bash
+   ```
+
+   Asegúrate de reemplazar `nombre_del_contenedor_php` por el nombre real del contenedor de PHP que definiste en tu `docker-compose.yml`.
+
+### Acceso a la base de datos. 
+1. Al ejecutar el contenedor de docker ademas de hacer las migraciones crea una instancia de phpmyadmin para entra debe:
+
+   ```plaintext
+     http://localhost:8081/
+   ```
+
+User: laravel
+Pass secret
+
+### Prueba de conexión a la base de datos
+1. Para verificar que la conexión a la base de datos sea correcta, puedes ejecutar los tests unitarios de conexión:
+
+   ```bash
+   php artisan test --filter testDatabaseConnection
+   ```
+
+   Si el test es exitoso, deberías ver un mensaje similar a este:
+
+   ```plaintext
+      PASS  Tests\Unit\ConnectionTest
+     ✓ database connection                                                                                                                    0.11s  
+
+     Tests:    1 passed (2 assertions)
+     Duration: 0.15s
+   ```
+
+### Ejecución de tests unitarios
+1. Para ejecutar todos los tests unitarios, utiliza el siguiente comando:
+
+   ```bash
+   vendor/bin/phpunit 
+   ```
+
+### Ejecución y documentación
+1. Para acceder a la documentación del proyecto, debes ejecutar el siguiente comando desde dentro del contenedor:
+Luego, puedes acceder a la documentación en tu navegador en `http://localhost:8000`.
+
 
 ## ################################################################################ Instrucciones para ejecutar el proyecto Laravel en local sin Docker (OPCIONAL)  ################################################################################
 

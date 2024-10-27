@@ -477,7 +477,7 @@ class TournamentController extends Controller
          *     )
          * )
          */
-        public function getTournamentResults(Request $request)
+        public function getTournamentResults(Request $request):JsonResponse
         {
             try {
                 $results = $this->tournamentService->getTournamentResults($request->all());

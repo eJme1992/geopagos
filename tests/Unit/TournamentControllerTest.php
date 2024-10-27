@@ -9,11 +9,13 @@ use App\Models\Tournament;
 use App\Models\Player;
 use App\Models\TournamentPlayerState;
 use App\Helpers\JwtAuth;
+use App\Http\Controllers\TournamentController;
 use App\Services\TournamentService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
-
-// vendor/bin/phpunit --filter TournamentControllerTest 
+use Mockery;
+use Illuminate\Http\Request;
+use Illuminate\Testing\TestResponse;
 
 class TournamentControllerTest extends TestCase
 {
@@ -21,6 +23,8 @@ class TournamentControllerTest extends TestCase
 
     protected $jwtAuth;
     private $token;
+    protected $tournamentService;
+    protected $tournamentController;
 
     protected function setUp(): void
     {
@@ -28,6 +32,8 @@ class TournamentControllerTest extends TestCase
         $this->jwtAuth = new JwtAuth();
         $this->setUpUserWithToken();
         $this->setUpGenderAndState();
+        $this->tournamentService = Mockery::mock(TournamentService::class);
+        $this->tournamentController = new TournamentController($this->tournamentService);
     }
 
     protected function setUpUserWithToken()
@@ -198,7 +204,6 @@ class TournamentControllerTest extends TestCase
         ]);
     }
 
-
     public function test_it_start_tournament_successfully()
     {
         $tournament = Tournament::factory()->create([
@@ -278,5 +283,131 @@ class TournamentControllerTest extends TestCase
         $response->assertJsonStructure([
             'error',
         ]);
+    }
+
+    public function test_get_tournament_results_by_date()
+    {
+        $date = '2024-10-27';
+        $tournaments = Tournament::factory()->count(2)->make(['created_at' => $date]);
+
+        $this->tournamentService->shouldReceive('getTournamentResults')
+            ->with(['date' => $date])
+            ->andReturn($tournaments);
+
+        $request = Request::create('/api/tournaments/results', 'GET', ['date' => $date]);
+        $response = $this->tournamentController->getTournamentResults($request);
+
+        $testResponse = TestResponse::fromBaseResponse($response);
+        $testResponse->assertStatus(200);
+        $testResponse->assertJson(['status' => 'Success', 'data' => $tournaments->toArray()]);
+    }
+
+    public function test_get_tournament_results_by_date_range()
+    {
+        $startDate = '2024-10-01';
+        $endDate = '2024-10-31';
+        $tournaments = Tournament::factory()->count(2)->make();
+
+        $this->tournamentService->shouldReceive('getTournamentResults')
+            ->with(['start_date' => $startDate, 'end_date' => $endDate])
+            ->andReturn($tournaments);
+
+        $request = Request::create('/api/tournaments/results', 'GET', ['start_date' => $startDate, 'end_date' => $endDate]);
+        $response = $this->tournamentController->getTournamentResults($request);
+
+        $testResponse = TestResponse::fromBaseResponse($response);
+        $testResponse->assertStatus(200);
+        $testResponse->assertJson(['status' => 'Success', 'data' => $tournaments->toArray()]);
+    }
+
+    public function test_get_tournament_results_by_gender()
+    {
+        $gender = 'male';
+        $tournaments = Tournament::factory()->count(2)->make();
+
+        $this->tournamentService->shouldReceive('getTournamentResults')
+            ->with(['gender' => $gender])
+            ->andReturn($tournaments);
+
+        $request = Request::create('/api/tournaments/results', 'GET', ['gender' => $gender]);
+        $response = $this->tournamentController->getTournamentResults($request);
+
+        $testResponse = TestResponse::fromBaseResponse($response);
+        $testResponse->assertStatus(200);
+        $testResponse->assertJson(['status' => 'Success', 'data' => $tournaments->toArray()]);
+    }
+
+    public function test_get_tournament_results_by_state()
+    {
+        $state = 'complete';
+        $tournaments = Tournament::factory()->count(2)->make();
+
+        $this->tournamentService->shouldReceive('getTournamentResults')
+            ->with(['state' => $state])
+            ->andReturn($tournaments);
+
+        $request = Request::create('/api/tournaments/results', 'GET', ['state' => $state]);
+        $response = $this->tournamentController->getTournamentResults($request);
+
+        $testResponse = TestResponse::fromBaseResponse($response);
+        $testResponse->assertStatus(200);
+        $testResponse->assertJson(['status' => 'Success', 'data' => $tournaments->toArray()]);
+    }
+
+    public function test_get_tournament_results_by_name()
+    {
+        $name = 'Championship';
+        $tournaments = Tournament::factory()->count(2)->make();
+
+        $this->tournamentService->shouldReceive('getTournamentResults')
+            ->with(['name' => $name])
+            ->andReturn($tournaments);
+
+        $request = Request::create('/api/tournaments/results', 'GET', ['name' => $name]);
+        $response = $this->tournamentController->getTournamentResults($request);
+
+        $testResponse = TestResponse::fromBaseResponse($response);
+        $testResponse->assertStatus(200);
+        $testResponse->assertJson(['status' => 'Success', 'data' => $tournaments->toArray()]);
+    }
+
+    public function test_get_tournament_results_by_number_players()
+    {
+        $numberPlayers = 16;
+        $tournaments = Tournament::factory()->count(2)->make();
+
+        $this->tournamentService->shouldReceive('getTournamentResults')
+            ->with(['number_players' => $numberPlayers])
+            ->andReturn($tournaments);
+
+        $request = Request::create('/api/tournaments/results', 'GET', ['number_players' => $numberPlayers]);
+        $response = $this->tournamentController->getTournamentResults($request);
+
+        $testResponse = TestResponse::fromBaseResponse($response);
+        $testResponse->assertStatus(200);
+        $testResponse->assertJson(['status' => 'Success', 'data' => $tournaments->toArray()]);
+    }
+
+    public function test_get_tournament_results_by_winner()
+    {
+        $winner = 'John';
+        $tournaments = Tournament::factory()->count(2)->make();
+
+        $this->tournamentService->shouldReceive('getTournamentResults')
+            ->with(['winner' => $winner])
+            ->andReturn($tournaments);
+
+        $request = Request::create('/api/tournaments/results', 'GET', ['winner' => $winner]);
+        $response = $this->tournamentController->getTournamentResults($request);
+
+        $testResponse = TestResponse::fromBaseResponse($response);
+        $testResponse->assertStatus(200);
+        $testResponse->assertJson(['status' => 'Success', 'data' => $tournaments->toArray()]);
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
     }
 }

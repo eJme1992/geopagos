@@ -10,6 +10,10 @@ done
 echo "MySQL está disponible. Ejecutando migraciones..."
 
 # Ejecuta las migraciones y seeder
-cd /var/www/html
-php artisan key:generate
-php artisan migrate:fresh --seed
+cd /var/www/html || { echo "Error: No se pudo cambiar al directorio /var/www/html"; exit 1; }
+php artisan migrate:fresh --seed || { echo "Error: Fallo al ejecutar las migraciones"; exit 1; }
+
+echo "Migraciones y seeders ejecutados correctamente."
+
+# Mantener el contenedor en ejecución
+tail -f /dev/null

@@ -6,7 +6,7 @@
 - Tener Docker y Docker Compose instalados en tu equipo.
 
 
-## ################################################################################Instrucciones para ejecutar el proyecto Laravel en local sin Docker OPCIONAL 
+## ################################################################################Instrucciones para ejecutar el proyecto Laravel en local sin Docker (OPCIONAL)  ################################################################################
 
 ### Requisitos previos
 - PHP 7.1 o superior instalado en tu equipo.

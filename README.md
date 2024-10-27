@@ -86,8 +86,7 @@ Pass secret
    ```
 
 ### Ejecución y documentación
-1. Para acceder a la documentación del proyecto, debes ejecutar el siguiente comando desde dentro del contenedor:
-Luego, puedes acceder a la documentación en tu navegador en `http://localhost:8000`.
+1. Para acceder a la documentación del proyecto, debes  puedes acceder a la documentación en tu navegador en `http://localhost:8000`.
 
 
 ## ################################################################################ Instrucciones para ejecutar el proyecto Laravel en local sin Docker (OPCIONAL)  ################################################################################

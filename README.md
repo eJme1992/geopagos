@@ -1,6 +1,12 @@
 # Prueba Técnica Edwin José Backend GeoPagos
 
-## Instrucciones para ejecutar el proyecto Laravel
+## Instrucciones para ejecutar el proyecto Laravel en local usando Docker
+
+### Requisitos previos
+- Tener Docker y Docker Compose instalados en tu equipo.
+
+
+## ################################################################################Instrucciones para ejecutar el proyecto Laravel en local sin Docker OPCIONAL 
 
 ### Requisitos previos
 - PHP 7.1 o superior instalado en tu equipo.
@@ -104,20 +110,3 @@ Estas instrucciones te ayudarán a configurar y ejecutar el proyecto Laravel cor
 ```bash
 php artisan migrate:fresh --seed
 ```
-
-## Ejecucion de test unitarios
-
-
-```bash
-vendor/bin/phpunit 
-```
-
-## Ejecución y documentación
-
-Para acceder a la documentación del proyecto, debes ejecutar los siguientes comandos desde la raíz:
-
-```bash
-php artisan serve
-```
-
-

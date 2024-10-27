@@ -1144,6 +1144,186 @@
                     }
                 ]
             }
+        },
+        "/api/tournaments/results": {
+            "get": {
+                "tags": [
+                    "Tournaments"
+                ],
+                "summary": "Obtener resultados de torneos finalizados",
+                "description": "Permite consultar el resultado de los torneos finalizados exitosamente con base en varios criterios.",
+                "operationId": "734ab049a9be1b41639dd02c0db7a8a3",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "Filtra los torneos por fecha de creación",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "description": "Fecha de inicio del rango de fechas de creación",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "description": "Fecha de fin del rango de fechas de creación",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "gender",
+                        "in": "query",
+                        "description": "Filtra los torneos por género (male o female)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "state",
+                        "in": "query",
+                        "description": "Filtra los torneos por estado",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Filtra los torneos por nombre",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "number_players",
+                        "in": "query",
+                        "description": "Filtra los torneos por número de jugadores",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "winner",
+                        "in": "query",
+                        "description": "Filtra los torneos por nombre del ganador",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Resultados de los torneos finalizados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "Success"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Championship 2024"
+                                                    },
+                                                    "gender_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "state_id": {
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    },
+                                                    "number_players": {
+                                                        "type": "integer",
+                                                        "example": 16
+                                                    },
+                                                    "winner_id": {
+                                                        "type": "integer",
+                                                        "example": 3
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-10-27T00:00:00.000000Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-10-27T00:00:00.000000Z"
+                                                    },
+                                                    "gender_name": {
+                                                        "type": "string",
+                                                        "example": "Male"
+                                                    },
+                                                    "state_name": {
+                                                        "type": "string",
+                                                        "example": "Complete"
+                                                    },
+                                                    "winner_name": {
+                                                        "type": "string",
+                                                        "example": "John Doe"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Internal server error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {

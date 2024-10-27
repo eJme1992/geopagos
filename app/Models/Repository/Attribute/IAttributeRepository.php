@@ -5,7 +5,7 @@ use Illuminate\Support\Collection;
 
 interface IAttributeRepository extends IRepositoryInterface
 {
-    public function getAttributesByGenderSlug(string $slug):?Collection;
+    public function getAttributesByGenderSlug(string $slug):? Collection;
 
-    public function getAttributesByGenderId(int $genderId):?Collection;
+    public function getAttributesByGenderId(int $genderId):? Collection;
 }

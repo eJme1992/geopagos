@@ -298,7 +298,6 @@ class TournamentController extends Controller
     }
 
     
-    
     /**
      * @OA\Get(
      *     path="/api/tournaments/{tournament_id}/start",
@@ -376,5 +375,119 @@ class TournamentController extends Controller
         } catch (\Exception $e) {
             return response()->json(["error" => $e->getMessage()], HttpStatusCodes::INTERNAL_SERVER_ERROR);
         }
+        
     }
+    
+        /**
+         * @OA\Get(
+         *     path="/api/tournaments/results",
+         *     summary="Obtener resultados de torneos finalizados",
+         *     description="Permite consultar el resultado de los torneos finalizados exitosamente con base en varios criterios.",
+         *     security={{"bearerAuth": {}}},
+         *     tags={"Tournaments"},
+         *     @OA\Parameter(
+         *         name="date",
+         *         in="query",
+         *         required=false,
+         *         @OA\Schema(type="string", format="date"),
+         *         description="Filtra los torneos por fecha de creación"
+         *     ),
+         *     @OA\Parameter(
+         *         name="start_date",
+         *         in="query",
+         *         required=false,
+         *         @OA\Schema(type="string", format="date"),
+         *         description="Fecha de inicio del rango de fechas de creación"
+         *     ),
+         *     @OA\Parameter(
+         *         name="end_date",
+         *         in="query",
+         *         required=false,
+         *         @OA\Schema(type="string", format="date"),
+         *         description="Fecha de fin del rango de fechas de creación"
+         *     ),
+         *     @OA\Parameter(
+         *         name="gender",
+         *         in="query",
+         *         required=false,
+         *         @OA\Schema(type="string"),
+         *         description="Filtra los torneos por género (male o female)"
+         *     ),
+         *     @OA\Parameter(
+         *         name="state",
+         *         in="query",
+         *         required=false,
+         *         @OA\Schema(type="string"),
+         *         description="Filtra los torneos por estado"
+         *     ),
+         *     @OA\Parameter(
+         *         name="name",
+         *         in="query",
+         *         required=false,
+         *         @OA\Schema(type="string"),
+         *         description="Filtra los torneos por nombre"
+         *     ),
+         *     @OA\Parameter(
+         *         name="number_players",
+         *         in="query",
+         *         required=false,
+         *         @OA\Schema(type="integer"),
+         *         description="Filtra los torneos por número de jugadores"
+         *     ),
+         *     @OA\Parameter(
+         *         name="winner",
+         *         in="query",
+         *         required=false,
+         *         @OA\Schema(type="string"),
+         *         description="Filtra los torneos por nombre del ganador"
+         *     ),
+         *     @OA\Response(
+         *         response=200,
+         *         description="Resultados de los torneos finalizados",
+         *         @OA\JsonContent(
+         *             type="object",
+         *             @OA\Property(property="status", type="string", example="Success"),
+         *             @OA\Property(
+         *                 property="data",
+         *                 type="array",
+         *                 @OA\Items(
+         *                     type="object",
+         *                     @OA\Property(property="id", type="integer", example=1),
+         *                     @OA\Property(property="name", type="string", example="Championship 2024"),
+         *                     @OA\Property(property="gender_id", type="integer", example=1),
+         *                     @OA\Property(property="state_id", type="integer", example=2),
+         *                     @OA\Property(property="number_players", type="integer", example=16),
+         *                     @OA\Property(property="winner_id", type="integer", example=3),
+         *                     @OA\Property(property="created_at", type="string", format="date-time", example="2024-10-27T00:00:00.000000Z"),
+         *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2024-10-27T00:00:00.000000Z"),
+         *                     @OA\Property(property="gender_name", type="string", example="Male"),
+         *                     @OA\Property(property="state_name", type="string", example="Complete"),
+         *                     @OA\Property(property="winner_name", type="string", example="John Doe")
+         *                 )
+         *             )
+         *         )
+         *     ),
+         *     @OA\Response(
+         *         response=500,
+         *         description="Error interno del servidor",
+         *         @OA\JsonContent(
+         *             type="object",
+         *             @OA\Property(property="error", type="string", example="Internal server error")
+         *         )
+         *     )
+         * )
+         */
+        public function getTournamentResults(Request $request)
+        {
+            try {
+                $results = $this->tournamentService->getTournamentResults($request->all());
+                return response()->json(
+                    ["status" => GeneralStatusResponse::SUCCESS, "data" => $results],
+                    HttpStatusCodes::OK
+                );
+            } catch (\Exception $e) {
+                return response()->json(["error" => $e->getMessage()], HttpStatusCodes::INTERNAL_SERVER_ERROR);
+            }
+        }
+    
 }

@@ -5,5 +5,6 @@ use Illuminate\Support\Collection;
 
 interface ITournamentRepository extends IRepositoryInterface
 {
-	public function findByGender(int $genderId):?Collection;
+	public function findByGender(int $genderId):? Collection;
+	public function getTournamentResults(array $filters): ? Collection;
 }

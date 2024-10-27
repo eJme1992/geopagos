@@ -186,4 +186,9 @@ class TournamentService
             'winner_id' => $winnerId
         ], $tournamentId);
     }
+
+    public function getTournamentResults(array $filters): Collection
+    {
+        return $this->tournamentRepository->getTournamentResults($filters);
+    }
 }

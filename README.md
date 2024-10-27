@@ -105,6 +105,13 @@ Estas instrucciones te ayudarán a configurar y ejecutar el proyecto Laravel cor
 php artisan migrate:fresh --seed
 ```
 
+## Ejecucion de test unitarios
+
+
+```bash
+vendor/bin/phpunit 
+```
+
 ## Ejecución y documentación
 
 Para acceder a la documentación del proyecto, debes ejecutar los siguientes comandos desde la raíz:
@@ -112,10 +119,5 @@ Para acceder a la documentación del proyecto, debes ejecutar los siguientes com
 ```bash
 php artisan serve
 ```
-### GEO PAGOS
 
-1. Registra un usuario Administrador en la pestaña Auth con el método register.
-2. Inicia sesión con el usuario administrador en la pestaña Auth usando el método login con los datos del método 1.
-
-Al hacer login, el método responde con el token de autenticación requerido.
 

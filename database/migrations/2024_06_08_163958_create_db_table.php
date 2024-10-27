@@ -43,6 +43,7 @@ return new class extends Migration
                     $table->foreignId('state_id')->constrained('tournament_states');
                     $table->integer('number_players');
                     $table->foreignId('winner_id')->nullable()->constrained('players');
+                    $table->foreignId('tournament_id')->constrained('tournamenta');
                     $table->timestamps();
                 });
         

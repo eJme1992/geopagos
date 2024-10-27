@@ -9,6 +9,7 @@ use App\Models\Tournament;
 use App\Models\Player;
 use App\Models\TournamentPlayerState;
 use App\Helpers\JwtAuth;
+use App\Services\TournamentService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -192,6 +193,88 @@ class TournamentControllerTest extends TestCase
         $response->dump(); // Muestra el contenido de la respuesta para depuración
 
         $response->assertStatus(400);
+        $response->assertJsonStructure([
+            'error',
+        ]);
+    }
+
+
+    public function test_it_start_tournament_successfully()
+    {
+        $tournament = Tournament::factory()->create([
+            'gender_id' => Gender::where('slug', 'male')->first()->id,
+            'state_id' => TournamentState::where('slug', 'created')->first()->id,
+            'number_players' => 2,
+        ]);
+    
+        $player1 = Player::factory()->create();
+        $player2 = Player::factory()->create();
+    
+        $tournament->players()->attach($player1->id, ['state_id' => TournamentPlayerState::where('slug', 'pending')->first()->id]);
+        $tournament->players()->attach($player2->id, ['state_id' => TournamentPlayerState::where('slug', 'pending')->first()->id]);
+    
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->getJson('/api/tournaments/' . $tournament->id . '/start');
+    
+        $response->dump(); // Muestra el contenido de la respuesta para depuración
+    
+        $response->assertStatus(200);
+    
+        $response->assertJsonStructure([
+            'status',
+            'data' => [
+                'id',
+                'name',
+            ],
+        ]);
+    }
+
+    public function test_it_fails_to_start_tournament_not_found()
+    {
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->getJson('/api/tournaments/999/start'); // ID que no existe
+    
+        $response->assertStatus(404);
+    
+        $response->assertJsonStructure([
+            'error',
+        ]);
+    }
+    
+    public function test_it_fails_to_start_tournament_validation_error()
+    {
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->getJson('/api/tournaments/invalid_id/start'); // ID no válido
+    
+        $response->assertStatus(404);
+    
+        $response->assertJsonStructure([
+            'error',
+        ]);
+    }
+    
+    public function test_it_fails_to_start_tournament_internal_server_error()
+    {
+        // Simular un error interno del servidor
+        $this->mock(TournamentService::class, function ($mock) {
+            $mock->shouldReceive('startTournament')->andThrow(new \Exception('Internal server error'));
+        });
+    
+        $tournament = Tournament::factory()->create([
+            'gender_id' => Gender::where('slug', 'male')->first()->id,
+            'state_id' => TournamentState::where('slug', 'created')->first()->id,
+            'number_players' => 2,
+        ]);
+    
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->getJson('/api/tournaments/' . $tournament->id . '/start');
+    
+        $response->assertStatus(500);
+    
         $response->assertJsonStructure([
             'error',
         ]);

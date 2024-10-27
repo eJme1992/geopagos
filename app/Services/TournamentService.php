@@ -142,11 +142,13 @@ class TournamentService
     public function startTournament(int $tournamentId): ?Tournament
     {
         $tournament = $this->tournamentRepository->find($tournamentId);
-        if (!$tournament || !$this->isTournamentComplete($tournamentId)) {
+        if (empty($tournament)|| !$this->isTournamentComplete($tournamentId)) {
+            info('Tournament not found or not complete'.$this->isTournamentComplete($tournamentId));
             return null;
         }
     
         $round = 1;
+
         do {
             $players = $this->tournamentPlayerRepository->findByTournament($tournamentId, ['pending', 'winner']);
             $count = $players->count();

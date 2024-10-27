@@ -28,7 +28,7 @@ class TournamentController extends Controller
      *     description="Crea un nuevo torneo con los parámetros proporcionados.",
      *     description="Registers a new player with the specified details. Requires JWT token for authentication.",
      *     security={{"bearerAuth": {}}},
-     *     tags={"Tournament"},
+     *     tags={"Tournaments"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -119,7 +119,7 @@ class TournamentController extends Controller
      *     description="Registra un jugador en un torneo con los parámetros proporcionados.",
      *     description="Registers a new player with the specified details. Requires JWT token for authentication.",
      *     security={{"bearerAuth": {}}},
-     *     tags={"Tournament"},
+     *     tags={"Tournaments"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -202,7 +202,7 @@ class TournamentController extends Controller
      *     description="Verifica si un torneo específico ha alcanzado el número de jugadores requeridos.",
      *     description="Registers a new player with the specified details. Requires JWT token for authentication.",
      *     security={{"bearerAuth": {}}},
-     *     tags={"Tournament"},
+     *     tags={"Tournaments"},
      *     @OA\Parameter(
      *         name="tournamentId",
      *         in="path",
@@ -248,7 +248,7 @@ class TournamentController extends Controller
      *     description="Obtiene una lista de torneos filtrados por género.",
      *     description="Registers a new player with the specified details. Requires JWT token for authentication.",
      *     security={{"bearerAuth": {}}},
-     *     tags={"Tournament"},
+     *     tags={"Tournaments"},
      *     @OA\Parameter(
      *         name="gender",
      *         in="path",
@@ -297,15 +297,17 @@ class TournamentController extends Controller
         }
     }
 
+    
+    
     /**
-     * @OA\Post(
-     *     path="/api/tournaments/{tournamentId}/start",
+     * @OA\Get(
+     *     path="/api/tournaments/{tournament_id}/start",
      *     summary="Iniciar un torneo",
      *     description="Inicia un torneo dado su ID. Requiere un token JWT para la autenticación.",
      *     security={{"bearerAuth": {}}},
      *     tags={"Tournaments"},
      *     @OA\Parameter(
-     *         name="tournamentId",
+     *         name="tournament_id",
      *         in="path",
      *         required=true,
      *         @OA\Schema(type="integer"),
@@ -338,17 +340,31 @@ class TournamentController extends Controller
      *     )
      * )
      */
-    public function startTournament(int $tournamentId): JsonResponse
+    public function startTournament($tournamentId): JsonResponse
     {
         try {
-            $validator = Validator::make(['tournamentId' => $tournamentId], [
+          
+            $validator = Validator::make(['tournament_id' => $tournamentId], [
                 "tournament_id" => "required|integer|exists:tournaments,id",
             ]);
     
             if ($validator->fails()) {
                 return response()->json(
                     ["error" => $validator->errors()],
-                    HttpStatusCodes::BAD_REQUEST
+                    HttpStatusCodes::NOT_FOUND
+                );
+            }
+
+            if (
+                !$this->tournamentService->isTournamentComplete(
+                    $tournamentId
+                )
+            ) {
+                return response()->json(
+                    [
+                        "error" => TournamentResponseMessages::TOURNAMENT_IS_NOT_COMPLETE,
+                    ],
+                    HttpStatusCodes::NOT_FOUND
                 );
             }
     

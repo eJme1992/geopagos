@@ -8,5 +8,5 @@ interface ITournamentPlayerRepository extends IRepositoryInterface
 {
     public function findByTournamentAndPlayer(int $tournamentId, int $playerId): ?TournamentPlayer;
     public function findByTournament(int $tournamentId,array $statesSlug = array('')):?Collection;
-    public function updateStatus(int $tournamentId, int $playerId, string $status):?TournamentPlayer;
+    public function updateStatus(int $tournamentId, int $playerId, int $statusId):?TournamentPlayer;
 }

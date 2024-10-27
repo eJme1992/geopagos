@@ -11,7 +11,8 @@ class Tournament extends Model
 
     protected $fillable = ['name', 'gender_id', 'state_id', 'number_players','winner_id'];
 
-    protected $winth = ['players'];
+    // agregar datos de funcions al modelo
+    protected $appends = ['winner_name','state_name','plays'];
 
     // Relación con Players (many-to-many)
     public function players()
@@ -33,9 +34,31 @@ class Tournament extends Model
         return $this->belongsTo(TournamentState::class, 'state_id');
     }
 
+    // play 
+    public function plays()
+    {
+        return $this->hasMany(Play::class);
+    }
+
     // Relación con Player (winner)
     public function winner()
     {
         return $this->belongsTo(Player::class, 'winner_id');
+    }
+
+    public function getWinnerNameAttribute()
+    {
+        return $this->winner ? $this->winner->name : '';
+    }
+
+    public function getStateNameAttribute()
+    {
+        return $this->state ? $this->state->name : '';
+    }
+
+    // play
+    public function getPlaysAttribute()
+    {
+        return $this->plays()->get();
     }
 }

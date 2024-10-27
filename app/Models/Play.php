@@ -38,6 +38,6 @@ class Play extends Model
     // Relación con Tournament
     public function tournament()
     {
-        return $this->belongsTo(Tournament::class);
+        return $this->belongsTo(Tournament::class, 'tournament_id');
     }
 }

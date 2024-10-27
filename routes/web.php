@@ -47,6 +47,7 @@ Route::prefix('api/tournaments')->middleware(ApiAuthMiddleware::class)->group(fu
     Route::get('/is-complete/{tournamentId}', [TournamentController::class, 'tournamentIsComplete']);
     //Torneos por genero
     Route::get('/gender/{gender}', [TournamentController::class, 'getTournamentsByGender']);
+    Route::get('/{tournamentId}/start', [TournamentController::class, 'startTournament']);
 });
 
 

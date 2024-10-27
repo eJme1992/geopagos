@@ -13,4 +13,5 @@ class TournamentResponseMessages
     public const ERROR_CREATING_TOURNAMENT = "Error al crear el torneo";
     public const SERVER_ERROR = "Error interno del servidor";
     public const TOURNAMENT_FETCH_SUCCESS = "Lista de torneos obtenida exitosamente";
+    public const TOURNAMENT_IS_NOT_COMPLETE = "El torneo no tiene el número de jugadores requeridos";
 }

@@ -735,7 +735,7 @@
         "/api/tournaments/register": {
             "post": {
                 "tags": [
-                    "Tournament"
+                    "Tournaments"
                 ],
                 "summary": "Crear un nuevo torneo",
                 "description": "Registers a new player with the specified details. Requires JWT token for authentication.",
@@ -832,7 +832,7 @@
         "/api/tournaments/register-player": {
             "post": {
                 "tags": [
-                    "Tournament"
+                    "Tournaments"
                 ],
                 "summary": "Registrar un jugador en un torneo",
                 "description": "Registers a new player with the specified details. Requires JWT token for authentication.",
@@ -924,7 +924,7 @@
         "/api/tournaments/is-complete/{tournamentId}": {
             "get": {
                 "tags": [
-                    "Tournament"
+                    "Tournaments"
                 ],
                 "summary": "Verificar si el torneo está completo",
                 "description": "Registers a new player with the specified details. Requires JWT token for authentication.",
@@ -984,7 +984,7 @@
         "/api/tournaments/gender/{gender}": {
             "get": {
                 "tags": [
-                    "Tournament"
+                    "Tournaments"
                 ],
                 "summary": "Obtener torneos por género",
                 "description": "Registers a new player with the specified details. Requires JWT token for authentication.",
@@ -1066,17 +1066,17 @@
                 ]
             }
         },
-        "/api/tournaments/{tournamentId}/start": {
-            "post": {
+        "/api/tournaments/{tournament_id}/start": {
+            "get": {
                 "tags": [
                     "Tournaments"
                 ],
                 "summary": "Iniciar un torneo",
                 "description": "Inicia un torneo dado su ID. Requiere un token JWT para la autenticación.",
-                "operationId": "057443fcc9f5444529b084abc6b400b0",
+                "operationId": "e4e326e6952182adf54934788e988875",
                 "parameters": [
                     {
-                        "name": "tournamentId",
+                        "name": "tournament_id",
                         "in": "path",
                         "description": "ID del torneo a iniciar",
                         "required": true,
@@ -1150,7 +1150,7 @@
         "schemas": {
             "PlayService": {
                 "title": "Play Service",
-                "description": "Service for managing Play",
+                "description": "Service for managing Plays",
                 "type": "object"
             },
             "PlayerService": {

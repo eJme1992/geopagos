@@ -18,6 +18,10 @@ RUN a2enmod rewrite
 # Configura ServerName en Apache para evitar advertencias
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
+# Configura Apache para escuchar en el puerto 8080
+RUN sed -i 's/Listen 80/Listen 8080/' /etc/apache2/ports.conf
+RUN sed -i 's/:80/:8080/' /etc/apache2/sites-available/000-default.conf
+
 # Instala Composer
 COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer
 
@@ -26,6 +30,9 @@ WORKDIR /var/www/html
 
 # Copia todos los archivos del proyecto al contenedor desde la raíz del proyecto
 COPY . /var/www/html/
+
+# Copia el archivo php.ini al contenedor
+COPY php.ini /usr/local/etc/php/
 
 # Crea las carpetas necesarias y asigna permisos
 RUN mkdir -p /var/www/html/storage/framework/{sessions,views,cache} \
@@ -46,6 +53,9 @@ RUN composer install
 # Copia el script de entrada
 COPY entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Exponer el puerto 8080
+EXPOSE 8080
 
 # Establece el script de entrada y el comando por defecto
 ENTRYPOINT ["entrypoint.sh"]

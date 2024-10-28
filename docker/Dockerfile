@@ -19,8 +19,7 @@ RUN a2enmod rewrite
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 
-# Copia el archivo de configuración de PHP
-COPY docker/php.ini /usr/local/etc/php/php.ini
+
 
 # Instala Composer
 COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer

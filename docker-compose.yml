@@ -31,6 +31,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql 
+      - ./docker/my.cnf:/etc/mysql/conf.d/my.cnf  # Montar el archivo de configuración personalizado
     networks:
       - laravel_network
     ports:

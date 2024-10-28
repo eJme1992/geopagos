@@ -1,6 +1,6 @@
 # Prueba Técnica Edwin José Backend GeoPagos
 
-# App corriendo deeployada http://ejme.byethost24.com/public/ 
+# App corriendo deeployada http://ejme.byethost24.com 
 
 ## Instrucciones para ejecutar el proyecto Laravel en local usando Docker
 

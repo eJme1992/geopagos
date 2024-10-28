@@ -10,7 +10,7 @@ services:
       - "8000:80"
     volumes:
       - .:/var/www/html  # Monta el código de Laravel en el contenedor
-      - ./docker/vhost.conf:/etc/apache2/sites-available/000-default.conf  # Configuración de Apache
+      - ./vhost.conf:/etc/apache2/sites-available/000-default.conf  # Configuración de Apache
     environment:
       - APACHE_DOCUMENT_ROOT=/var/www/html/public  # Cambia el directorio raíz de Apache
     networks:
@@ -28,7 +28,7 @@ services:
       MYSQL_PASSWORD: secret
     volumes:
       - db_data:/var/lib/mysql
-      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql 
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql 
     networks:
       - laravel_network
     ports:

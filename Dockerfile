@@ -18,9 +18,6 @@ RUN a2enmod rewrite
 # Configura ServerName en Apache para evitar advertencias
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-
-
-
 # Instala Composer
 COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer
 
@@ -28,7 +25,7 @@ COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 # Copia todos los archivos del proyecto al contenedor desde la raíz del proyecto
-COPY ../ /var/www/html/
+COPY . /var/www/html/
 
 # Crea las carpetas necesarias y asigna permisos
 RUN mkdir -p /var/www/html/storage/framework/{sessions,views,cache} \
@@ -39,16 +36,15 @@ RUN mkdir -p /var/www/html/storage/framework/{sessions,views,cache} \
 # Instala el cliente MySQL
 RUN apt-get update && apt-get install -y default-mysql-client
 
-
 # Copia el script init.sh y establece los permisos
-COPY docker/init.sh /usr/local/bin/init.sh
+COPY init.sh /usr/local/bin/init.sh
 RUN chmod +x /usr/local/bin/init.sh
 
 # Instala las dependencias de Composer
 RUN composer install
 
 # Copia el script de entrada
-COPY docker/entrypoint.sh /usr/local/bin/
+COPY entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Establece el script de entrada y el comando por defecto

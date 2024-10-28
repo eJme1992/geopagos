@@ -4,10 +4,24 @@ mkdir -p /var/www/html/storage/framework/views
 chown -R www-data:www-data /var/www/html/storage
 chmod -R 775 /var/www/html/storage
 
-# Espera a que MySQL esté disponible
+# Verificar conectividad inicial a MySQL
+if ! mysql -h db -u laravel -psecret -e "SELECT 1"; then
+    echo "Error: No se pudo conectar a MySQL. Verifique las credenciales y la disponibilidad del servidor."
+fi
+
+# Espera a que MySQL esté disponible con un tiempo de espera máximo
+MAX_WAIT=300  # 5 minutos
+WAIT_INTERVAL=5
+WAIT_TIME=0
+
 until mysql -h db -u laravel -psecret -e "SELECT 1" &>/dev/null; do
+    if [ $WAIT_TIME -ge $MAX_WAIT ]; then
+        echo "Error: Tiempo de espera máximo alcanzado. MySQL no está disponible."
+        exit 1
+    fi
     echo "Esperando a que MySQL esté disponible..."
-    sleep 2
+    sleep $WAIT_INTERVAL
+    WAIT_TIME=$((WAIT_TIME + WAIT_INTERVAL))
 done
 
 # Verificación adicional para asegurarse de que el script ha pasado la comprobación

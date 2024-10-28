@@ -15,6 +15,8 @@ services:
       - APACHE_DOCUMENT_ROOT=/var/www/html/public  # Cambia el directorio raíz de Apache
     networks:
       - laravel_network
+    depends_on:
+      - db
     command: ["/usr/local/bin/init.sh"]  # Cambia la ruta al script
 
   db:

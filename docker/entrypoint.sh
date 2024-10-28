@@ -5,7 +5,7 @@ chown -R www-data:www-data /var/www/html/storage
 chmod -R 775 /var/www/html/storage
 
 # Lista de IPs del servidor MySQL
-MYSQL_HOSTS=("44.226.145.213" "54.187.200.255" "34.213.214.55" "35.164.95.156" "44.230.95.183" "44.229.200.200")
+MYSQL_HOSTS=("44.226.145.213" "54.187.200.255" "34.213.214.55" "35.164.95.156" "44.230.95.183" "44.229.200.200","https://geopagos.onrender.com")
 
 # Espera a que MySQL esté disponible con un tiempo de espera máximo de 1 minuto
 MAX_WAIT=60  # 1 minuto

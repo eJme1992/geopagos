@@ -1,5 +1,7 @@
 # Prueba Técnica Edwin José Backend GeoPagos
 
+# App corriendo deeployada http://ejme.byethost24.com/public/ 
+
 ## Instrucciones para ejecutar el proyecto Laravel en local usando Docker
 
 ### Requisitos previos
@@ -27,19 +29,28 @@
    Archivo env 
 
     APP_NAME=Laravel
+    
     APP_ENV=local
+    
     APP_KEY=base64:YOUR_APP_KEY
+    
     APP_DEBUG=true
+    
     APP_URL=http://localhost
 
     LOG_CHANNEL=stack
 
     DB_CONNECTION=mysql
+    
     DB_HOST=db
+    
     DB_PORT=3306
+    
     DB_DATABASE=laravel
+    
     DB_USERNAME=laravel
-DB_PASSWORD=secret
+   
+    DB_PASSWORD=secret
 
 
 ### Acceso al contenedor de la aplicación
